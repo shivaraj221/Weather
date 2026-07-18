@@ -288,8 +288,21 @@ def chat_with_agronomist(message, location):
     except Exception as e:
         return "I'm sorry, my connection to the AI network is currently unstable. Please try again later."
 
+_ai_cache = {}
+
 def get_master_ai_data(location, weather_data, season):
     api_key = os.getenv("GROQ_API_KEY", "")
+    
+    import time
+    current_time = time.time()
+    cache_key = f"{location.lower().strip()}_{season}"
+    
+    # Check cache (expires after 15 minutes = 900 seconds)
+    if cache_key in _ai_cache:
+        if current_time - _ai_cache[cache_key]["timestamp"] < 900:
+            return _ai_cache[cache_key]["data"]
+            
+    temp = float((weather_data or {}).get('main',{}).get('temp', 28))
     temp = float((weather_data or {}).get('main',{}).get('temp', 28))
     humidity = float((weather_data or {}).get('main',{}).get('humidity', 65))
     weather_desc = "Clear"
@@ -432,7 +445,8 @@ Respond ONLY with a valid JSON object (no markdown, no backticks, just raw JSON)
   ]
 }}"""
     try:
-        client = Groq(api_key=api_key)
+        # Disable automatic retries so a 429 fails fast instead of sleeping and causing a Gunicorn timeout
+        client = Groq(api_key=api_key, max_retries=0)
         res = client.chat.completions.create(
             messages=[{"role":"user","content":prompt}], 
             model="llama-3.1-8b-instant", 
@@ -442,6 +456,13 @@ Respond ONLY with a valid JSON object (no markdown, no backticks, just raw JSON)
         content = res.choices[0].message.content.strip()
         data = json.loads(content)
         data["is_mock"] = False
+        
+        # Save to cache
+        _ai_cache[cache_key] = {
+            "timestamp": current_time,
+            "data": data
+        }
+        
         return data
     except Exception as e:
         print(f"Groq API Error: {str(e).encode('ascii', 'ignore').decode()}")
