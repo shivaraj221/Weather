@@ -2,7 +2,6 @@ blinker==1.6.2
 certifi==2023.5.7
 charset-normalizer==3.2.0
 click==8.1.5
-colorama==0.4.6
 Flask==2.3.2
 idna==3.4
 itsdangerous==2.1.2
@@ -13,7 +12,5 @@ requests==2.31.0
 urllib3==2.0.3
 waitress==2.1.2
 Werkzeug==2.3.6
-beautifulsoup4==4.12.2
-lxml==4.9.3
 groq
 gunicorn
