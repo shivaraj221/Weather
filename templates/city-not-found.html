@@ -1,20 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Not Found</title>
-    <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" />
+    <title>Location Not Found – NexAgri OS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='styles/agri_style.css') }}" rel="stylesheet" />
+    <style>
+      body { display:flex; align-items:center; justify-content:center; flex-direction:column; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; text-align:center; }
+      .error-card { background:var(--card); border:1px solid var(--danger); padding:40px; border-radius:var(--radius); max-width:400px; width:100%; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
+      .error-icon { font-size:4rem; margin-bottom:10px; }
+      .search-box { display:flex; gap:10px; margin-top:25px; }
+      .search-box input { flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:10px 15px; color:#fff; border-radius:8px; outline:none; }
+      .search-box button { background:var(--accent); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:600; cursor:pointer; }
+    </style>
 </head>
-
 <body>
-    <h1>City Not Found</h1>
-    <h2>Try Again?</h2>
-    <form action="/weather">
-        <input type="text" name="city" id="city" placeholder="Enter a City" />
-        <button type="submit">Submit</button>
-    </form>
+    <div class="error-card">
+        <div class="error-icon">🌍❌</div>
+        <h2 style="margin-bottom:10px;">Location Not Found</h2>
+        <p style="color:var(--muted); font-size:0.9rem;">We couldn't locate that city or pincode. Please check your spelling and try again.</p>
+        
+        <form action="/agri-dashboard" class="search-box">
+            <input type="text" name="city" placeholder="City, State, or Pincode..." autocomplete="off" required />
+            <button type="submit">Search</button>
+        </form>
+        
+        <div style="margin-top:20px;">
+           <a href="/agri-dashboard" style="color:var(--accent); font-size:0.8rem; text-decoration:none;">← Return to Dashboard</a>
+        </div>
+    </div>
 </body>
-
 </html>
