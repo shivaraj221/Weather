@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from weather import get_current_weather
 from agri_data import get_dashboard_data, chat_with_agronomist
 from waitress import serve
@@ -41,7 +41,8 @@ def get_history(location, limit=50):
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    # Redirect root to the NexAgri dashboard (default city: Hyderabad)
+    return redirect(url_for('agri_dashboard'))
 
 
 @app.route('/weather')
